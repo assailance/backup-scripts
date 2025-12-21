@@ -2,6 +2,9 @@
 
 set -Eeuo pipefail
 
+# Global constants
+ENV_FILE="$(dirname "$0")/.env"
+
 # ANSI color codes
 readonly COLOR_RESET="\033[0m"
 readonly COLOR_INFO="\033[0;36m"
@@ -33,3 +36,33 @@ on_error() {
 }
 
 trap on_error ERR
+
+# Environment variables
+load_env() {
+  if [[ ! -f "$ENV_FILE" ]]; then
+    error ".env file not found: $ENV_FILE"
+    exit 1
+  fi
+
+  export $(grep -v '^#' "$ENV_FILE" | xargs)
+}
+
+validate_env() {
+  local vars=(
+    TELEGRAM_BOT_TOKEN
+    TELEGRAM_CHAT_ID
+    BACKUP_SOURCE_DIR
+  )
+
+  for v in "${vars[@]}"; do
+    if [[ -z "${!v:-}" ]]; then
+      error "Environment variable $v is not set"
+      exit 1
+    fi
+  done
+
+  if [[ ! -d "$BACKUP_SOURCE_DIR" ]]; then
+    error "Source directory does not exist: $BACKUP_SOURCE_DIR"
+    exit 1
+  fi
+}
