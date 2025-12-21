@@ -88,7 +88,7 @@ cleanup() {
   local archive_path="$1"
 
   rm -f "$archive_path"
-  log_info "Temporary file removed"
+  info "Temporary file removed"
 }
 
 send_to_telegram() {
