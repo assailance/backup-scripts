@@ -1,0 +1,8 @@
+.idea
+idea
+.DS_Store
+.vs
+.vscode
+
+.env*
+!.env*.template
