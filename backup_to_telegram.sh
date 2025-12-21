@@ -105,3 +105,22 @@ send_to_telegram() {
 
   success "Archive sent successfully!"
 }
+
+main() {
+  info "Backup script started..."
+
+  load_env
+  validate_env
+
+  info "Directory to backup: $BACKUP_SOURCE_DIR"
+
+  local archive
+  archive="$(create_archive)"
+
+  send_to_telegram "$archive"
+  cleanup "$archive"
+
+  success "Backup finished successfully!"
+}
+
+main "$@"
