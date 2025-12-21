@@ -82,3 +82,18 @@ create_archive() {
 
   echo "$archive_path"
 }
+
+send_to_telegram() {
+  local archive_path="$1"
+
+  info "Sending archive to Telegram..."
+
+  curl -sS -X POST \
+    "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
+    -F chat_id="$TELEGRAM_CHAT_ID" \
+    -F document=@"$archive_path" \
+    -F caption="Backup $(basename "$archive_path")" \
+    > /dev/null
+
+  success "Archive sent successfully!"
+}
