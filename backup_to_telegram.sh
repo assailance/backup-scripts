@@ -66,3 +66,19 @@ validate_env() {
     exit 1
   fi
 }
+
+create_archive() {
+  local timestamp archive_name archive_path
+
+  timestamp="$(date '+%Y-%m-%d_%H-%M-%S')"
+  archive_name="backup_${timestamp}.tar.gz"
+  archive_path="/tmp/${archive_name}"
+
+  info "Creating archive ${archive_path}..."
+
+  tar -czf "$archive_path" \
+    -C "$(dirname "$BACKUP_SOURCE_DIR")" \
+    "$(basename "$BACKUP_SOURCE_DIR")"
+
+  echo "$archive_path"
+}
