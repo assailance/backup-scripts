@@ -67,6 +67,7 @@ validate_env() {
   fi
 }
 
+# Creating & cleanup backup
 create_archive() {
   local timestamp archive_name archive_path
 
@@ -81,6 +82,13 @@ create_archive() {
     "$(basename "$BACKUP_SOURCE_DIR")"
 
   echo "$archive_path"
+}
+
+cleanup() {
+  local archive_path="$1"
+
+  rm -f "$archive_path"
+  log_info "Temporary file removed"
 }
 
 send_to_telegram() {
