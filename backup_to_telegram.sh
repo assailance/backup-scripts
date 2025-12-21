@@ -24,3 +24,12 @@ info()    { log INFO    "$COLOR_INFO"    "$1"; }
 success() { log SUCCESS "$COLOR_SUCCESS" "$1"; }
 warn()    { log WARN    "$COLOR_WARN"    "$1"; }
 error()   { log ERROR   "$COLOR_ERROR"   "$1"; }
+
+# Error handler
+on_error() {
+  local code=$?
+  error "Script failed with exit code ${code}"
+  exit "$code"
+}
+
+trap on_error ERR
