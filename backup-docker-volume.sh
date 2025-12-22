@@ -123,13 +123,12 @@ validate_env() {
 }
 
 validate_args() {
-  if [[ $# -ne 2 ]]; then
-    error "Usage: $0 <backup_name> <docker_volume>"
+  if [[ $# -ne 1 ]]; then
+    error "Usage: $0 <docker_volume>"
     exit 1
   fi
 
-  BACKUP_NAME="$1"
-  VOLUME_NAME="$2"
+  VOLUME_NAME="$1"
 
   if ! docker volume inspect "$VOLUME_NAME" > /dev/null 2>&1; then
     error "Docker volume does not exist: $VOLUME_NAME"
@@ -142,7 +141,7 @@ create_archive() {
   local timestamp archive_name archive_path
 
   timestamp="$(date '+%Y-%m-%d_%H-%M-%S')"
-  archive_name="${BACKUP_NAME// /_}_${timestamp}.tar.gz"
+  archive_name="${VOLUME_NAME// /_}_${timestamp}.tar.gz"
   archive_path="/tmp/${archive_name}"
 
   info "Creating archive from Docker volume ${VOLUME_NAME}..."
@@ -175,11 +174,10 @@ send_backup() {
 
   size="$(du -h "$archive_path" | cut -f1)"
   caption="$(cat <<EOF
-🟢 Резервное <b>копирование</b> тома успешно <b>выполнено</b>.
+🟢 Резервное копирование <b>тома</b> успешно <b>выполнено</b>.
 ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
-Название: <b>${BACKUP_NAME}</b>
-Том: ${VOLUME_NAME}
-Размер: <b>${size}</b>
+Том: <b>${VOLUME_NAME}</b>
+Итоговый размер: <b>${size}</b>
 EOF
 )"
 
