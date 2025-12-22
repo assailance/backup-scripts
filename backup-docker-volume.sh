@@ -154,6 +154,8 @@ create_archive() {
     alpine \
     tar -czf "/backup/${archive_name}" -C /data .
 
+  success "Archive created: $archive_path"
+
   echo "$archive_path"
 }
 

@@ -94,7 +94,6 @@ TELEGRAM_CHAT_ID=${chat_id}
 EOF
 
   chmod 600 "$ENV_FILE"
-
   success ".env file successfully created!"
 }
 
@@ -151,6 +150,8 @@ create_archive() {
   tar -czf "$archive_path" \
     -C "$(dirname "$BACKUP_SOURCE_DIR")" \
     "$(basename "$BACKUP_SOURCE_DIR")"
+
+  success "Archive created: $archive_path"
 
   echo "$archive_path"
 }
