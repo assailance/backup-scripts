@@ -100,16 +100,36 @@ cleanup() {
   info "Temporary file removed"
 }
 
-send_to_telegram() {
+# Sending notification
+success_backup_caption() {
   local archive_path="$1"
+  local size created
+
+  size="$(du -h "$archive_path" | cut -f1)"
+
+  cat <<EOF
+🟢 Резервное <b>копирование</b> директории успешно <b>выполнено</b>.
+≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+Название: <b>${BACKUP_NAME}</b>
+Путь: <i>${BACKUP_SOURCE_DIR}</i>
+Итоговый размер: <b>${size}</b>
+EOF
+}
+
+send_backup_to_telegram() {
+  local archive_path="$1"
+  local caption
 
   info "Sending archive to Telegram..."
+
+  caption="$(success_backup_caption "$archive")"
 
   curl -sS -X POST \
     "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
     -F chat_id="$TELEGRAM_CHAT_ID" \
     -F document=@"$archive_path" \
-    -F caption="Backup $(basename "$archive_path")" \
+    -F caption="$caption" \
+    -F parse_mode="HTML" \
     > /dev/null
 
   success "Archive sent successfully!"
@@ -127,7 +147,7 @@ main() {
   local archive
   archive="$(create_archive)"
 
-  send_to_telegram "$archive"
+  send_backup_to_telegram "$archive"
   cleanup "$archive"
 
   success "Backup finished successfully!"
