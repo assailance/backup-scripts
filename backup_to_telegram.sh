@@ -47,32 +47,50 @@ create_env() {
 
   local token chat_id
 
-  # Bot token
   while true; do
-    input "Enter the bot token: " token
+    # Get bot token
+    while true; do
+      input "Enter the bot token: " token
 
-    if [[ -z "$token" ]]; then
-      wrong "Bot token cannot be empty!"
-    elif [[ ! "$token" =~ ^[0-9]+:[a-zA-Z0-9_-]{35}$ ]]; then
-      wrong "Invalid bot token format!"
+      if [[ -z "$token" ]]; then
+        wrong "Bot token cannot be empty!"
+      elif [[ ! "$token" =~ ^[0-9]+:[a-zA-Z0-9_-]{35}$ ]]; then
+        wrong "Invalid bot token format!"
+      else
+        break
+      fi
+    done
+
+    # Get chat ID
+    while true; do
+      input "Enter the chat ID: " chat_id
+
+      if [[ -z "$chat_id" ]]; then
+        wrong "Chat ID cannot be empty!"
+      elif [[ ! "$chat_id" =~ ^-?[0-9]+$ ]]; then
+        wrong "Invalid chat ID format!"
+      else
+        break
+      fi
+    done
+
+    # Validate bot token and chat ID
+    info "Checking Telegram bot..."
+    response=$(curl -sS -o /dev/null -w "%{http_code}" -X POST \
+      "https://api.telegram.org/bot${token}/sendMessage" \
+      -d chat_id="${chat_id}" \
+      -d text="Hi, it's a test message for the backup script!"
+    )
+    
+    if [[ "$response" -ne 200 ]]; then
+        wrong "Invalid bot token, chat ID, or Telegram API error!"
     else
-      break
+        success "Bot token and chat ID are valid."
+        break
     fi
   done
 
-  # Chat ID
-  while true; do
-    input "Enter the chat ID: " chat_id
-
-    if [[ -z "$chat_id" ]]; then
-      wrong "Chat ID cannot be empty!"
-    elif [[ ! "$chat_id" =~ ^-?[0-9]+$ ]]; then
-      wrong "Invalid chat ID format!"
-    else
-      break
-    fi
-  done
-
+  # Creating .env file
   cat > "$ENV_FILE" <<EOF
 TELEGRAM_BOT_TOKEN=${token}
 TELEGRAM_CHAT_ID=${chat_id}
