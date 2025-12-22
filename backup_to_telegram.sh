@@ -43,8 +43,6 @@ trap on_error ERR
 
 # Environments & validation 
 create_env() {
-  info ".env file not found. Creating a new one..."
-
   local token chat_id
 
   while true; do
@@ -103,6 +101,7 @@ EOF
 
 load_env() {
   if [[ ! -f "$ENV_FILE" ]]; then
+    info ".env file not found. Creating a new one..."
     create_env
   fi
 
