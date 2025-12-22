@@ -12,7 +12,7 @@ readonly COLOR_SUCCESS="\033[0;32m"
 readonly COLOR_WARN="\033[0;33m"
 readonly COLOR_ERROR="\033[0;31m"
 
-# Logging
+# Logging functions
 log() {
   local level="$1"
   local color="$2"
@@ -26,7 +26,11 @@ log() {
 info()    { log INFO    "$COLOR_INFO"    "$1"; }
 success() { log SUCCESS "$COLOR_SUCCESS" "$1"; }
 warn()    { log WARN    "$COLOR_WARN"    "$1"; }
+wrong()   { log WRONG   "$COLOR_ERROR"   "$1"; }
 error()   { log ERROR   "$COLOR_ERROR"   "$1"; }
+
+# Interactive functions
+input() { read -rp "$(echo -e "${COLOR_WARN}${1}${COLOR_RESET}")" "$2"; }
 
 # Error handler
 on_error() {
