@@ -25,7 +25,6 @@ log() {
 
 info()    { log INFO    "$COLOR_INFO"    "$1"; }
 success() { log SUCCESS "$COLOR_SUCCESS" "$1"; }
-warn()    { log WARN    "$COLOR_WARN"    "$1"; }
 wrong()   { log WRONG   "$COLOR_ERROR"   "$1"; }
 error()   { log ERROR   "$COLOR_ERROR"   "$1"; }
 
