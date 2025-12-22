@@ -151,8 +151,6 @@ create_archive() {
     -C "$(dirname "$BACKUP_SOURCE_DIR")" \
     "$(basename "$BACKUP_SOURCE_DIR")"
 
-  success "Archive created: $archive_path"
-
   echo "$archive_path"
 }
 
