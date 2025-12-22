@@ -81,7 +81,7 @@ create_archive() {
   local timestamp archive_name archive_path
 
   timestamp="$(date '+%Y-%m-%d_%H-%M-%S')"
-  archive_name="backup_${timestamp}.tar.gz"
+  archive_name="${BACKUP_NAME// /_}_${timestamp}.tar.gz"
   archive_path="/tmp/${archive_name}"
 
   info "Creating archive ${archive_path}..."
