@@ -159,9 +159,9 @@ create_archive() {
 }
 
 cleanup() {
-  local archive_path="$1"
+  local path="$1"
   
-  rm -f "$archive_path"
+  rm -f "$path"
   info "Temporary file removed"
 }
 
