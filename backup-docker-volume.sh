@@ -167,12 +167,12 @@ cleanup() {
 
 # Sending notification
 send_backup() {
-  local archive_path="$1"
+  local backup_path="$1"
   local size caption
 
   info "Sending archive to Telegram..."
 
-  size="$(du -h "$archive_path" | cut -f1)"
+  size="$(du -h "$backup_path" | cut -f1)"
   caption="$(cat <<EOF
 🟢 Резервное копирование <b>тома</b> успешно <b>выполнено</b>.
 ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
@@ -184,7 +184,7 @@ EOF
   curl -sS -X POST \
     "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
     -F chat_id="$TELEGRAM_CHAT_ID" \
-    -F document=@"$archive_path" \
+    -F document=@"$backup_path" \
     -F caption="$caption" \
     -F parse_mode="HTML" \
     > /dev/null
