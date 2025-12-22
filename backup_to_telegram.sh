@@ -41,14 +41,56 @@ on_error() {
 
 trap on_error ERR
 
-# Environments & Validation 
+# Environments & validation 
+create_env() {
+  info ".env file not found. Creating a new one..."
+
+  local token chat_id
+
+  # Bot token
+  while true; do
+    input "Enter the bot token: " token
+
+    if [[ -z "$token" ]]; then
+      wrong "Bot token cannot be empty!"
+    elif [[ ! "$token" =~ ^[0-9]+:[a-zA-Z0-9_-]{35}$ ]]; then
+      wrong "Invalid bot token format!"
+    else
+      break
+    fi
+  done
+
+  # Chat ID
+  while true; do
+    input "Enter the chat ID: " chat_id
+
+    if [[ -z "$chat_id" ]]; then
+      wrong "Chat ID cannot be empty!"
+    elif [[ ! "$chat_id" =~ ^-?[0-9]+$ ]]; then
+      wrong "Invalid chat ID format!"
+    else
+      break
+    fi
+  done
+
+  cat > "$ENV_FILE" <<EOF
+TELEGRAM_BOT_TOKEN=${token}
+TELEGRAM_CHAT_ID=${chat_id}
+EOF
+
+  chmod 600 "$ENV_FILE"
+
+  success ".env file successfully created!"
+}
+
 load_env() {
   if [[ ! -f "$ENV_FILE" ]]; then
-    error ".env file not found: $ENV_FILE"
-    exit 1
+    create_env
   fi
 
   export $(grep -v '^#' "$ENV_FILE" | xargs)
+
+  validate_env
 }
 
 validate_env() {
@@ -136,7 +178,6 @@ main() {
   info "Backup script started..."
 
   load_env
-  validate_env
   validate_args "$@"
 
   info "Directory to backup: $BACKUP_SOURCE_DIR"
