@@ -20,7 +20,7 @@ log() {
   local timestamp
 
   timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
-  echo -e "${color}[${timestamp}] [$level] ${message}${COLOR_RESET}" >&2;
+  echo -e "${color}[${timestamp}] [$level] ${message}${COLOR_RESET}" >&2
 }
 
 info()    { log INFO    "$COLOR_INFO"    "$1"; }
