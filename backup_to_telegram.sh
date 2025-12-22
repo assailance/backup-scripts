@@ -37,7 +37,7 @@ on_error() {
 
 trap on_error ERR
 
-# Environment variables
+# Environments & Validation 
 load_env() {
   if [[ ! -f "$ENV_FILE" ]]; then
     error ".env file not found: $ENV_FILE"
@@ -51,7 +51,6 @@ validate_env() {
   local vars=(
     TELEGRAM_BOT_TOKEN
     TELEGRAM_CHAT_ID
-    BACKUP_SOURCE_DIR
   )
 
   for v in "${vars[@]}"; do
@@ -60,9 +59,19 @@ validate_env() {
       exit 1
     fi
   done
+}
+
+validate_args() {
+  if [[ $# -ne 2 ]]; then
+    error "Usage: $0 <backup_name> <directory_path>"
+    exit 1
+  fi
+
+  BACKUP_NAME="$1"
+  BACKUP_SOURCE_DIR="$2"
 
   if [[ ! -d "$BACKUP_SOURCE_DIR" ]]; then
-    error "Source directory does not exist: $BACKUP_SOURCE_DIR"
+    error "Directory does not exist: $BACKUP_SOURCE_DIR"
     exit 1
   fi
 }
@@ -111,6 +120,7 @@ main() {
 
   load_env
   validate_env
+  validate_args "$@"
 
   info "Directory to backup: $BACKUP_SOURCE_DIR"
 
