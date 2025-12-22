@@ -147,8 +147,8 @@ create_archive() {
 
   info "Creating archive from Docker volume ${VOLUME_NAME}..."
 
-  docker run --rm 
-    --user $(id -u):$(id -g)\
+  docker run --rm \
+    --user $(id -u):$(id -g) \
     -v "${VOLUME_NAME}:/data:ro" \
     -v "/tmp:/backup" \
     alpine \
