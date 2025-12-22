@@ -101,7 +101,7 @@ cleanup() {
 }
 
 # Sending notification
-send_backup_to_telegram() {
+send_backup() {
   local archive_path="$1"
   local size caption
 
@@ -140,7 +140,7 @@ main() {
   local archive
   archive="$(create_archive)"
 
-  send_backup_to_telegram "$archive"
+  send_backup "$archive"
   cleanup "$archive"
 
   success "Backup finished successfully!"
