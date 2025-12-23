@@ -129,8 +129,8 @@ validate_args() {
   DATABASE_NAME="$2"
   POSTGRES_USER="$3"
 
-  if ! docker inspect "$CONTAINER_NAME" > /dev/null 2>&1; then
-    error "Docker container does not exist: $CONTAINER_NAME"
+  if ! docker inspect -f '{{.State.Running}}' "$CONTAINER_NAME" 2> /dev/null | grep -q true; then
+    error "Docker container does not exist or is not running: $CONTAINER_NAME"
     exit 1
   fi
 }
