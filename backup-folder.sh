@@ -134,6 +134,8 @@ validate_args() {
     error "Directory does not exist: $BACKUP_SOURCE_DIR"
     exit 1
   fi
+
+  BACKUP_SOURCE_DIR="$(realpath "$BACKUP_SOURCE_DIR")"
 }
 
 # Creating & cleanup backup
