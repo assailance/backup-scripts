@@ -121,7 +121,7 @@ validate_env() {
 
 validate_args() {
   if [[ $# -ne 3 ]]; then
-    error "Usage: $0 <postgres_container> <database> <db_user>"
+    error "Usage: $0 <postgres_container> <db_name> <db_user>"
     exit 1
   fi
 
