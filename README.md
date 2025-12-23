@@ -1,4 +1,9 @@
-<img src="images/backup-postgres.png">
+<table>
+  <tr>
+    <td><img src="images/backup-postgres.png"></td>
+    <td><img width="800" src="images/notification.png"></td>
+  </tr>
+</table>
 
 Simple **bash scripts** for creating **backups** and sending them to Telegram.
 
