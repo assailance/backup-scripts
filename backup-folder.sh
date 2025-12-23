@@ -104,7 +104,6 @@ load_env() {
   fi
 
   export $(grep -v '^#' "$ENV_FILE" | xargs)
-
   validate_env
 }
 
