@@ -145,12 +145,17 @@ create_archive() {
 
   info "Creating archive from Docker volume ${VOLUME_NAME}..."
 
-  docker run --rm \
+  if ! docker run --rm \
     --user $(id -u):$(id -g) \
     -v "${VOLUME_NAME}:/data:ro" \
     -v "/tmp:/backup" \
     alpine \
     tar -czf "/backup/${archive_name}" -C /data .
+  then
+    error "Docker volume backup failed"
+    cleanup "$archive_path"
+    return 1
+  fi
 
   success "Archive created: $archive_path"
 
@@ -200,7 +205,9 @@ main() {
   info "Volume to backup: $VOLUME_NAME"
 
   local archive
-  archive="$(create_archive)"
+  if ! archive="$(create_archive)"; then
+    exit 1
+  fi
 
   send_backup "$archive"
   cleanup "$archive"
