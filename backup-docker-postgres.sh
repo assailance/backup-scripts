@@ -145,8 +145,12 @@ create_backup() {
 
   info "Creating PostgreSQL dump from container ${CONTAINER_NAME}..."
 
-  docker exec "$CONTAINER_NAME" \
-    pg_dump -U "$POSTGRES_USER" "$DATABASE_NAME" > "$dump_path"
+  if ! docker exec "$CONTAINER_NAME" \
+      pg_dump -U "$POSTGRES_USER" "$DATABASE_NAME" > "$dump_path"; then
+    error "PostgreSQL dump failed"
+    cleanup "$dump_path"
+    return 1
+  fi
 
 	success "Dump successfully completed: $dump_path"
 
@@ -197,7 +201,9 @@ main() {
 	info "Database to backup: $DATABASE_NAME"
 
   local dump
-  dump="$(create_backup)"
+  if ! dump="$(create_backup)"; then
+    exit 1
+  fi
 
   send_backup "$dump"
   cleanup "$dump"
