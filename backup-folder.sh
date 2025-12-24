@@ -152,7 +152,8 @@ create_archive() {
     -C "$(dirname "$BACKUP_SOURCE_DIR")" \
     "$(basename "$BACKUP_SOURCE_DIR")"
   then
-    error "Failed to create archive"
+    error "Folder backup failed"
+    cleanup "$archive_path"
     return 1
   fi
 
