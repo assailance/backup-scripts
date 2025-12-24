@@ -148,9 +148,13 @@ create_archive() {
 
   info "Creating archive ${archive_path}..."
 
-  tar -czf "$archive_path" \
+  if ! tar -czf "$archive_path" \
     -C "$(dirname "$BACKUP_SOURCE_DIR")" \
     "$(basename "$BACKUP_SOURCE_DIR")"
+  then
+    error "Failed to create archive"
+    return 1
+  fi
 
   echo "$archive_path"
 }
@@ -199,7 +203,9 @@ main() {
   info "Directory to backup: $BACKUP_SOURCE_DIR"
 
   local archive
-  archive="$(create_archive)"
+  if ! archive="$(create_archive)"; then
+    exit 1
+  fi
 
   send_backup "$archive"
   cleanup "$archive"
