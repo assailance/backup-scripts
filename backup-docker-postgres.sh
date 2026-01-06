@@ -172,6 +172,8 @@ send_backup() {
   info "Sending backup to Telegram..."
 
   size="$(du -h "$backup_path" | cut -f1)"
+  info "Backup size: $size"
+
   caption="$(cat <<EOF
 🟢 Резервное копирование <b>базы данных</b> успешно <b>выполнено</b>.
 ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
