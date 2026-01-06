@@ -187,21 +187,32 @@ EOF
 )"
 
   response="$(
-    curl -sS -o /dev/null -w "%{http_code}" -X POST \
+    curl -sS -o /dev/null -w "%{http_code}" \
+      --connect-timeout 10 \
+      --max-time 120 \
+      -X POST \
       "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
       -F chat_id="$TELEGRAM_CHAT_ID" \
       -F document=@"$backup_path" \
       -F caption="$caption" \
       -F parse_mode="HTML"
   )"
+  curl_code=$?
 
-  if [[ "$response" != "200" ]]; then
-    error "Failed to send backup to Telegram (HTTP ${response})"
-    cleanup "$backup_path"
-    return 1
+  if [[ "$curl_code" -eq 0 && "$response" == "200" ]]; then
+    success "Backup sent successfully!"
+    return 0
   fi
 
-  success "Backup sent successfully!"
+  # Error handling
+  if [[ "$curl_code" -eq 28 ]]; then
+    error "Telegram request timed out"
+  else
+    error "Failed to send backup to Telegram (HTTP ${response:-unknown})"
+  fi
+
+  cleanup "$backup_path"
+  return 1
 }
 
 main() {
