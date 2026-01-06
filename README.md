@@ -17,7 +17,7 @@ chmod +x backup-docker-volume.sh
 chmod +x backup-docker-postgres.sh
 ```
 
-## Backup folder
+## 📁 Backup folder
 
 You must specify the **backup name** and **path** to the directory.
 
@@ -34,7 +34,7 @@ backup-folder.sh Name ./images
 backup-folder.sh "Few words" /var/log/nginx
 ```
 
-## Backup volume (Docker)
+## 🗳️ Backup volume (Docker)
 
 You must specify the **volume name**. The script will **automatically** check if it **exists**.
 
@@ -116,7 +116,7 @@ backup-docker-volume.sh random-volume  # Docker volume does not exist: random-vo
 > - may become inconsistent
 > - may fail to restore correctly later
 
-## Backup postgres (Docker)
+## 🛢 Backup postgres (Docker)
 
 You must specify the **container name** (or **id**), **database name**, and **user name**.
 
