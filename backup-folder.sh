@@ -172,27 +172,30 @@ send_backup() {
   local backup_path="$1"
   local size caption
 
-  info "Sending archive to Telegram..."
-
   size="$(du -h "$backup_path" | cut -f1)"
   info "Backup size: $size"
 
+  info "Sending archive to Telegram..."
+
   caption="$(cat <<EOF
-🟢 Резервное копирование <b>директории</b> успешно <b>выполнено</b>.
+🟢 <b>Folder</b> backup completed <b>successfully</b>.
 ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
-Название: <b>${BACKUP_NAME}</b>
-Директория: <b>${BACKUP_SOURCE_DIR}</b>
-Итоговый размер: <b>${size}</b>
+Name: <b>${BACKUP_NAME}</b>
+Directory: <b>${BACKUP_SOURCE_DIR}</b>
+Backup size: <b>${size}</b>
 EOF
 )"
 
-  curl -sS -X POST \
-    "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
-    -F chat_id="$TELEGRAM_CHAT_ID" \
-    -F document=@"$backup_path" \
-    -F caption="$caption" \
-    -F parse_mode="HTML" \
-    > /dev/null
+  if ! curl -sS -X POST \
+      "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
+      -F chat_id="$TELEGRAM_CHAT_ID" \
+      -F document=@"$backup_path" \
+      -F caption="$caption" \
+      -F parse_mode="HTML" \
+      -o /dev/null; then
+    error "Failed to send backup to Telegram"
+    return 1
+  fi
 
   success "Archive sent successfully!"
 }

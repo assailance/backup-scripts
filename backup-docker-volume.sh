@@ -174,16 +174,16 @@ send_backup() {
   local backup_path="$1"
   local size caption
 
-  info "Sending archive to Telegram..."
-
   size="$(du -h "$backup_path" | cut -f1)"
   info "Backup size: $size"
 
+  info "Sending archive to Telegram..."
+
   caption="$(cat <<EOF
-🟢 Резервное копирование <b>тома</b> успешно <b>выполнено</b>.
+🟢 <b>Docker volume</b> backup completed <b>successfully</b>.
 ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
-Том: <b>${VOLUME_NAME}</b>
-Итоговый размер: <b>${size}</b>
+Volume: <b>${VOLUME_NAME}</b>
+Backup size: <b>${size}</b>
 EOF
 )"
 

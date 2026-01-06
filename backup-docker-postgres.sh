@@ -169,17 +169,17 @@ send_backup() {
   local backup_path="$1"
   local size caption
 
-  info "Sending backup to Telegram..."
-
   size="$(du -h "$backup_path" | cut -f1)"
   info "Backup size: $size"
 
+  info "Sending backup to Telegram..."
+  
   caption="$(cat <<EOF
-🟢 Резервное копирование <b>базы данных</b> успешно <b>выполнено</b>.
+🟢 <b>PostgreSQL database</b> backup completed <b>successfully</b>.
 ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
-Контейнер: <b>${CONTAINER_NAME}</b>
-База данных: <b>${DATABASE_NAME}</b>
-Итоговый размер: <b>${size}</b>
+Container: <b>${CONTAINER_NAME}</b>
+Database: <b>${DATABASE_NAME}</b>
+Backup size: <b>${size}</b>
 EOF
 )"
 
