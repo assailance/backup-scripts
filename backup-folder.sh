@@ -186,18 +186,22 @@ Backup size: <b>${size}</b>
 EOF
 )"
 
-  if ! curl -sS -X POST \
+  response="$(
+    curl -sS -o /dev/null -w "%{http_code}" -X POST \
       "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
       -F chat_id="$TELEGRAM_CHAT_ID" \
       -F document=@"$backup_path" \
       -F caption="$caption" \
-      -F parse_mode="HTML" \
-      -o /dev/null; then
-    error "Failed to send backup to Telegram"
+      -F parse_mode="HTML"
+  )"
+
+  if [[ "$response" != "200" ]]; then
+    error "Failed to send backup to Telegram (HTTP ${response})"
+    cleanup "$backup_path"
     return 1
   fi
 
-  success "Archive sent successfully!"
+  success "Backup sent successfully!"
 }
 
 main() {
@@ -213,9 +217,11 @@ main() {
     exit 1
   fi
 
-  send_backup "$archive"
-  cleanup "$archive"
+  if ! send_backup "$archive"; then
+    exit 1
+  fi
 
+  cleanup "$archive"
   success "Backup finished successfully!"
 }
 
